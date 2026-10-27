@@ -1,186 +1,262 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+// ==========================================================================
+// 1. SINGLETON PATTERN: Cart Manager
+// ==========================================================================
+class CartManager {
+    constructor() {
+        if (CartManager.instance) {
+            return CartManager.instance;
+        }
+        this.items = [];
+        CartManager.instance = this;
+    }
+
+    addItem(item) {
+        this.items.push(item);
+        this.updateUI();
+    }
+
+    getItems() {
+        return this.items;
+    }
+
+    getTotal() {
+        return this.items.reduce((sum, item) => sum + item.price, 0);
+    }
+
+    clearCart() {
+        this.items = [];
+        this.updateUI();
+    }
+
+    updateUI() {
+        const cartCount = document.getElementById('cart-count');
+        const cartItemsDiv = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+
+        cartCount.textContent = this.items.length;
+        
+        if (this.items.length === 0) {
+            cartItemsDiv.innerHTML = '<p>No items in cart.</p>';
+        } else {
+            cartItemsDiv.innerHTML = this.items.map(item => `
+                <div class="cart-item-row">
+                    <span>${item.name}</span>
+                    <span>₹${item.price}</span>
+                </div>
+            `).join('');
+        }
+        cartTotal.textContent = this.getTotal();
+    }
 }
-body {
-    background-color: #f8f9fa;
-    color: #333;
+const cartManager = new CartManager();
+Object.freeze(cartManager);
+
+
+// ==========================================================================
+// 2. STRATEGY PATTERN: Delivery Fee Calculation Strategies
+// ==========================================================================
+class StandardDeliveryStrategy {
+    calculateFee(subtotal) { return 40; }
+    getDescription() { return "Standard Delivery (Fee: ₹40)"; }
 }
-header {
-    background-color: #e23744;
-    color: white;
-    padding: 1rem 2.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+
+class ExpressDeliveryStrategy {
+    calculateFee(subtotal) { return 80; }
+    getDescription() { return "Express Priority Delivery (Fee: ₹80)"; }
 }
-.logo {
-    font-size: 1.8rem;
-    font-weight: 800;
+
+class FreeDeliveryStrategy {
+    calculateFee(subtotal) { return 0; }
+    getDescription() { return "Free Delivery Coupon Applied (Fee: ₹0)"; }
 }
-.cart-badge {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 600;
+
+class DeliveryFeeContext {
+    constructor(strategy) {
+        this.strategy = strategy;
+    }
+    setStrategy(strategy) {
+        this.strategy = strategy;
+    }
+    executeCalculation(subtotal) {
+        return this.strategy.calculateFee(subtotal);
+    }
 }
-.hero-banner {
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80') center/cover;
-    color: white;
-    text-align: center;
-    padding: 3rem 1rem;
-    margin-bottom: 2rem;
+
+
+// ==========================================================================
+// 3. OBSERVER PATTERN: Restaurant & Delivery Agents Notification System
+// ==========================================================================
+class OrderSubject {
+    constructor() {
+        this.observers = [];
+    }
+    subscribe(observer) {
+        this.observers.push(observer);
+    }
+    notify(orderSummary) {
+        this.observers.forEach(observer => observer.update(orderSummary));
+    }
 }
-.hero-banner h1 {
-    font-size: 2.2rem;
-    margin-bottom: 0.5rem;
+
+class DeliveryAgentObserver {
+    constructor(agentName) {
+        this.agentName = agentName;
+    }
+    update(orderSummary) {
+        console.log(`[Notification to Agent ${this.agentName}]: New order received! 🛵 -> ${orderSummary}`);
+    }
 }
-.hero-banner p {
-    font-size: 1rem;
-    color: #ddd;
+
+// Set up Subject and registered delivery agents
+const restaurantOrderPublisher = new OrderSubject();
+restaurantOrderPublisher.subscribe(new DeliveryAgentObserver("Ramesh"));
+restaurantOrderPublisher.subscribe(new DeliveryAgentObserver("Suresh"));
+
+
+// ==========================================================================
+// 4. FACTORY METHOD PATTERN: Order Creation
+// ==========================================================================
+class DeliveryOrder {
+    process(items, fee, total) {
+        return `[Home Delivery Order]\nItems: ${items.map(i => i.name).join(', ')}\nDelivery Fee: ₹${fee}\nFinal Total: ₹${total + fee}\nStatus: Out for delivery! 🛵`;
+    }
 }
-.container {
-    max-width: 1000px;
-    margin: 0 auto 3rem auto;
-    padding: 0 1rem;
+class TakeawayOrder {
+    process(items, fee, total) {
+        return `[Takeaway Order]\nItems: ${items.map(i => i.name).join(', ')}\nFinal Total: ₹${total} (No delivery fee)\nStatus: Ready for counter pickup in 15 mins! 🛍️`;
+    }
 }
-section {
-    background: white;
-    padding: 1.8rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+class DineInOrder {
+    process(items, fee, total) {
+        return `[Dine-In Order]\nItems: ${items.map(i => i.name).join(', ')}\nFinal Total: ₹${total}\nStatus: Table reserved, kitchen notified! 🍽️`;
+    }
 }
-h2 {
-    margin-bottom: 1.2rem;
-    color: #1c1c1c;
-    font-size: 1.3rem;
-    border-bottom: 2px solid #f1f1f1;
-    padding-bottom: 0.5rem;
+
+class OrderFactory {
+    static createOrder(type) {
+        switch (type.toLowerCase()) {
+            case 'delivery': return new DeliveryOrder();
+            case 'takeaway': return new TakeawayOrder();
+            case 'dinein': return new DineInOrder();
+            default: throw new Error('Invalid order type.');
+        }
+    }
 }
-.form-group select {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ccd0d5;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: #fff;
+
+
+// ==========================================================================
+// 5. COMMAND PATTERN: Actions (Place / Cancel Order with Undo)
+// ==========================================================================
+class OrderCommandService {
+    placeOrder(orderData) {
+        const factoryOrder = OrderFactory.createOrder(orderData.type);
+        const resultMsg = factoryOrder.process(orderData.items, orderData.fee, orderData.subtotal);
+        
+        // Trigger Observer Pattern notification
+        restaurantOrderPublisher.notify(orderData.items.map(i => i.name).join(', '));
+        
+        return resultMsg;
+    }
+
+    cancelOrder(orderData) {
+        return `[Order Cancelled Successfully]\nYour previous order for ${orderData.items.length} item(s) has been cancelled and refund initiated. ❌`;
+    }
 }
-.menu-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
+
+class PlaceOrderCommand {
+    constructor(service, data) {
+        this.service = service;
+        this.data = data;
+    }
+    execute() {
+        return this.service.placeOrder(this.data);
+    }
+    undo() {
+        return this.service.cancelOrder(this.data);
+    }
 }
-.menu-item {
-    border: 1px solid #eaeaea;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+
+
+// ==========================================================================
+// APP INITIALIZATION & UI CONTROLLERS
+// ==========================================================================
+const menuItems = [
+    { id: 1, name: 'Chicken Biryani', price: 299, desc: 'Hyderabadi Dum Biryani', image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=60' },
+    { id: 2, name: 'Paneer Butter Masala', price: 249, desc: 'Rich cottage cheese curry', image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=60' },
+    { id: 3, name: 'Veg Fried Rice', price: 199, desc: 'Wok-tossed rice with veggies', image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=60' },
+    { id: 4, name: 'Chocolate Brownie', price: 129, desc: 'Warm gooey chocolate treat', image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500&auto=format&fit=crop&q=60' }
+];
+
+function renderMenu() {
+    const menuGrid = document.getElementById('menu-grid');
+    menuGrid.innerHTML = menuItems.map(item => `
+        <div class="menu-item">
+            <img src="${item.image}" alt="${item.name}">
+            <div class="menu-content">
+                <h3>${item.name}</h3>
+                <p>${item.desc}</p>
+                <div class="price-row">
+                    <span class="price">₹${item.price}</span>
+                    <button onclick="window.addItemToCart(${item.id})">Add +</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
-.menu-item img {
-    width: 100%;
-    height: 130px;
-    object-fit: cover;
-}
-.menu-content {
-    padding: 1rem;
-}
-.menu-item h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.3rem;
-}
-.menu-item p {
-    color: #718096;
-    font-size: 0.85rem;
-    margin-bottom: 0.8rem;
-}
-.price-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.price {
-    font-weight: 700;
-    font-size: 1.05rem;
-}
-.menu-item button {
-    background-color: #e23744;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-}
-.cart-items-list {
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-}
-.cart-item-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.4rem 0;
-    border-bottom: 1px dashed #edf2f7;
-}
-.total-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 2px solid #edf2f7;
-    padding-top: 1rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-.button-group {
-    display: flex;
-    gap: 0.8rem;
-}
-.btn-success {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-.btn-danger {
-    background-color: #c0392b;
-    color: white;
-    border: none;
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-.btn-danger:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-}
-.output-box {
-    margin-top: 1.2rem;
-    padding: 1.2rem;
-    background: #f0fff4;
-    border: 1px solid #c6f6d5;
-    border-radius: 8px;
-    font-family: monospace;
-    white-space: pre-wrap;
-    border-left: 5px solid #38a169;
-    color: #22543d;
-}
-footer {
-    text-align: center;
-    padding: 1.5rem;
-    color: #718096;
-    background: #fff;
-    border-top: 1px solid #eaeaea;
-}
+
+window.addItemToCart = function(id) {
+    const item = menuItems.find(i => i.id === id);
+    if (item) cartManager.addItem(item);
+};
+
+let lastExecutedCommand = null;
+const orderService = new OrderCommandService();
+
+document.getElementById('place-order-btn').addEventListener('click', () => {
+    const items = cartManager.getItems();
+    if (items.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+
+    const orderType = document.getElementById('order-type-select').value;
+    const strategyVal = document.getElementById('delivery-strategy-select').value;
+
+    // Strategy Pattern Context setup
+    let deliveryContext = new DeliveryFeeContext(new StandardDeliveryStrategy());
+    if (strategyVal === 'express') deliveryContext.setStrategy(new ExpressDeliveryStrategy());
+    if (strategyVal === 'free') deliveryContext.setStrategy(new FreeDeliveryStrategy());
+
+    const deliveryFee = deliveryContext.executeCalculation(cartManager.getTotal());
+
+    const orderData = {
+        type: orderType,
+        items: [...items],
+        subtotal: cartManager.getTotal(),
+        fee: deliveryFee
+    };
+
+    // Command Pattern Execution
+    lastExecutedCommand = new PlaceOrderCommand(orderService, orderData);
+    const resultMessage = lastExecutedCommand.execute();
+
+    const outputBox = document.getElementById('order-output');
+    outputBox.style.display = 'block';
+    outputBox.textContent = resultMessage;
+
+    // Enable undo / cancel button
+    document.getElementById('cancel-order-btn').disabled = false;
+    cartManager.clearCart();
+});
+
+document.getElementById('cancel-order-btn').addEventListener('click', () => {
+    if (lastExecutedCommand) {
+        const undoMessage = lastExecutedCommand.undo();
+        const outputBox = document.getElementById('order-output');
+        outputBox.textContent = undoMessage;
+        document.getElementById('cancel-order-btn').disabled = true;
+        lastExecutedCommand = null;
+    }
+});
+
+window.addEventListener('DOMContentLoaded', renderMenu);

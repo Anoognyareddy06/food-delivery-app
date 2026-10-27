@@ -23,7 +23,6 @@ header {
 .logo {
     font-size: 1.8rem;
     font-weight: 800;
-    letter-spacing: 0.5px;
 }
 .cart-badge {
     background: rgba(255, 255, 255, 0.2);
@@ -31,24 +30,21 @@ header {
     border-radius: 20px;
     font-weight: 600;
 }
-
-/* Hero Banner */
 .hero-banner {
     background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80') center/cover;
     color: white;
     text-align: center;
-    padding: 4rem 1rem;
+    padding: 3rem 1rem;
     margin-bottom: 2rem;
 }
 .hero-banner h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin-bottom: 0.5rem;
 }
 .hero-banner p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #ddd;
 }
-
 .container {
     max-width: 1000px;
     margin: 0 auto 3rem auto;
@@ -68,18 +64,14 @@ h2 {
     border-bottom: 2px solid #f1f1f1;
     padding-bottom: 0.5rem;
 }
-.order-type-section select {
+.form-group select {
     width: 100%;
-    padding: 0.9rem;
+    padding: 0.8rem;
     border: 1px solid #ccd0d5;
     border-radius: 8px;
     font-size: 1rem;
-    outline: none;
     background: #fff;
-    cursor: pointer;
 }
-
-/* Food Grid & Cards */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -90,31 +82,21 @@ h2 {
     border-radius: 10px;
     overflow: hidden;
     background: #fff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-.menu-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
 .menu-item img {
     width: 100%;
-    height: 140px;
+    height: 130px;
     object-fit: cover;
 }
 .menu-content {
     padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
 }
 .menu-item h3 {
     font-size: 1.1rem;
     margin-bottom: 0.3rem;
-    color: #2d3748;
 }
 .menu-item p {
     color: #718096;
@@ -125,32 +107,23 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: auto;
 }
 .price {
     font-weight: 700;
-    color: #2d3748;
     font-size: 1.05rem;
 }
 .menu-item button {
     background-color: #e23744;
     color: white;
     border: none;
-    padding: 0.5rem 0.9rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    transition: background 0.2s;
 }
-.menu-item button:hover {
-    background-color: #c82333;
-}
-
-/* Cart & Checkout */
 .cart-items-list {
     margin-bottom: 1rem;
     font-size: 0.95rem;
-    color: #4a5568;
 }
 .cart-item-row {
     display: flex;
@@ -164,20 +137,34 @@ h2 {
     align-items: center;
     border-top: 2px solid #edf2f7;
     padding-top: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
-#checkout-btn {
+.button-group {
+    display: flex;
+    gap: 0.8rem;
+}
+.btn-success {
     background-color: #27ae60;
     color: white;
     border: none;
-    padding: 0.8rem 1.8rem;
+    padding: 0.7rem 1.2rem;
     border-radius: 8px;
-    font-size: 1rem;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.2s;
 }
-#checkout-btn:hover {
-    background-color: #219653;
+.btn-danger {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-danger:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
 }
 .output-box {
     margin-top: 1.2rem;
@@ -192,9 +179,8 @@ h2 {
 }
 footer {
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem;
     color: #718096;
-    font-size: 0.9rem;
     background: #fff;
     border-top: 1px solid #eaeaea;
 }

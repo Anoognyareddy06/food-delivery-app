@@ -8,24 +8,30 @@
 </head>
 <body>
     <header>
-        <div class="logo">QuickBite 🍔</div>
-        <div class="cart-info">Cart: <span id="cart-count">0</span> items</div>
+        <div class="logo">QuickBite 🍕</div>
+        <div class="cart-badge">🛒 Cart: <span id="cart-count">0</span> items</div>
     </header>
+
+    <!-- Zomato/Swiggy Style Hero Banner -->
+    <div class="hero-banner">
+        <h1>Discover the best food & drinks</h1>
+        <p>Order from your favorite restaurants with lightning-fast delivery</p>
+    </div>
 
     <main class="container">
         <!-- Order Type Selection (Factory Method Pattern) -->
         <section class="order-type-section">
             <h2>Select Order Type (Factory Method)</h2>
             <select id="order-type-select">
-                <option value="delivery">Home Delivery</option>
-                <option value="takeaway">Takeaway</option>
-                <option value="dinein">Dine-In</option>
+                <option value="delivery">🛵 Home Delivery (+₹40 Fee)</option>
+                <option value="takeaway">🛍️ Takeaway (Counter Pickup)</option>
+                <option value="dinein">🍽️ Dine-In (Table Reservation)</option>
             </select>
         </section>
 
         <!-- Restaurant Menu -->
         <section class="menu-section">
-            <h2>Restaurant Menu</h2>
+            <h2>Featured Menu</h2>
             <div class="menu-grid" id="menu-grid">
                 <!-- Dynamically populated via JS -->
             </div>
@@ -34,14 +40,18 @@
         <!-- Cart Summary & Checkout -->
         <section class="cart-section">
             <h2>Your Order Summary</h2>
-            <div id="cart-items">No items in cart.</div>
+            <div id="cart-items" class="cart-items-list">No items in cart.</div>
             <div class="total-container">
-                <h3>Total: ₹<span id="cart-total">0</span></h3>
-                <button id="checkout-btn">Place Order</button>  
+                <h3>Total Amount: ₹<span id="cart-total">0</span></h3>
+                <button id="checkout-btn">Place Order</button>
             </div>
             <div id="order-output" class="output-box" style="display:none;"></div>
         </section>
     </main>
+
+    <footer>
+        <p>&copy; 2026 QuickBite Food Delivery App | Built with Design Patterns</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>

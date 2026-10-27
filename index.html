@@ -3,54 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickBite - Food Delivery App</title>
+    <title>QuickBite - Food Delivery App (All Patterns)</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <div class="logo">QuickBite 🍕</div>
+        <div class="logo">QuickBite 🍔</div>
         <div class="cart-badge">🛒 Cart: <span id="cart-count">0</span> items</div>
     </header>
 
-    <!-- Zomato/Swiggy Style Hero Banner -->
     <div class="hero-banner">
-        <h1>Discover the best food & drinks</h1>
-        <p>Order from your favorite restaurants with lightning-fast delivery</p>
+        <h1>Zomato/Swiggy Design Pattern Lab</h1>
+        <p>Featuring Creational (Singleton, Factory) & Behavioral (Observer, Strategy, Command) Patterns</p>
     </div>
 
     <main class="container">
-        <!-- Order Type Selection (Factory Method Pattern) -->
-        <section class="order-type-section">
-            <h2>Select Order Type (Factory Method)</h2>
-            <select id="order-type-select">
-                <option value="delivery">🛵 Home Delivery (+₹40 Fee)</option>
-                <option value="takeaway">🛍️ Takeaway (Counter Pickup)</option>
-                <option value="dinein">🍽️ Dine-In (Table Reservation)</option>
-            </select>
+        <!-- Configuration Section for Patterns -->
+        <section class="config-section">
+            <h2>Design Pattern Selectors</h2>
+            
+            <div class="form-group">
+                <label><strong>1. Factory Method (Order Type):</strong></label>
+                <select id="order-type-select">
+                    <option value="delivery">Home Delivery</option>
+                    <option value="takeaway">Takeaway</option>
+                    <option value="dinein">Dine-In</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <label><strong>2. Strategy Pattern (Delivery Fee Strategy):</strong></label>
+                <select id="delivery-strategy-select">
+                    <option value="standard">Standard Delivery (₹40)</option>
+                    <option value="express">Express Priority Delivery (₹80)</option>
+                    <option value="free">Free Delivery Coupon (₹0)</option>
+                </select>
+            </div>
         </section>
 
         <!-- Restaurant Menu -->
         <section class="menu-section">
-            <h2>Featured Menu</h2>
-            <div class="menu-grid" id="menu-grid">
-                <!-- Dynamically populated via JS -->
-            </div>
+            <h2>Restaurant Menu</h2>
+            <div class="menu-grid" id="menu-grid"></div>
         </section>
 
-        <!-- Cart Summary & Checkout -->
+        <!-- Cart Summary & Command Actions -->
         <section class="cart-section">
-            <h2>Your Order Summary</h2>
+            <h2>Your Order Summary & Command Invoker</h2>
             <div id="cart-items" class="cart-items-list">No items in cart.</div>
             <div class="total-container">
                 <h3>Total Amount: ₹<span id="cart-total">0</span></h3>
-                <button id="checkout-btn">Place Order</button>
+                <div class="button-group">
+                    <button id="place-order-btn" class="btn-success">Execute: Place Order (Command)</button>
+                    <button id="cancel-order-btn" class="btn-danger" disabled>Undo: Cancel Order</button>
+                </div>
             </div>
             <div id="order-output" class="output-box" style="display:none;"></div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 QuickBite Food Delivery App | Built with Design Patterns</p>
+        <p>&copy; 2026 QuickBite App | SR University Software Engineering Lab</p>
     </footer>
 
     <script src="script.js"></script>

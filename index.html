@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickBite - Food Delivery App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">QuickBite 🍔</div>
+        <div class="cart-info">Cart: <span id="cart-count">0</span> items</div>
+    </header>
+
+    <main class="container">
+        <!-- Order Type Selection (Factory Method Pattern) -->
+        <section class="order-type-section">
+            <h2>Select Order Type (Factory Method)</h2>
+            <select id="order-type-select">
+                <option value="delivery">Home Delivery</option>
+                <option value="takeaway">Takeaway</option>
+                <option value="dinein">Dine-In</option>
+            </select>
+        </section>
+
+        <!-- Restaurant Menu -->
+        <section class="menu-section">
+            <h2>Restaurant Menu</h2>
+            <div class="menu-grid" id="menu-grid">
+                <!-- Dynamically populated via JS -->
+            </div>
+        </section>
+
+        <!-- Cart Summary & Checkout -->
+        <section class="cart-section">
+            <h2>Your Order Summary</h2>
+            <div id="cart-items">No items in cart.</div>
+            <div class="total-container">
+                <h3>Total: ₹<span id="cart-total">0</span></h3>
+                <button id="checkout-btn">Place Order</button>  
+            </div>
+            <div id="order-output" class="output-box" style="display:none;"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
